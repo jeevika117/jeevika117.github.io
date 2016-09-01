@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Canvas Ball Game </title>
+    </head>
+    <body>
+        <canvas id="canvasBoard" width="500" height="500">
+        </canvas>
+    </body>
+    <script>
+    
+        var 
+            ballX =250,
+            ballY =250,
+            ballDx = 2,
+            ballDy = 2,
+            boardX =500,
+            boardY =500,
+            paddleX =250,
+            paddleH =20,
+            paddleY = 470,
+            paddleW = 200,
+            canvas,
+            ctx,
+            gameloop;   
+            
+       startGame();
+        
+        function startGame(){
+            canvas = document.getElementById("canvasBoard");
+            ctx = canvas.getContext("2d");
+            gameloop = setInterval(bounceball,15);
+            window.addEventListener('keydown', keypressListener , true);
+            bounceball();
+            
+        }
+        function bounceball(){
+           drawCanvasBoard(); 
+           drawPaddle();
+           drawBall();
+           handleBallMovement(); 
+        }
+        function drawCanvasBoard(){
+            ctx.clearRect(0,0,boardX,boardY);
+            ctx.beginPath();
+            ctx.rect(0,0,boardX,boardY);
+            ctx.closePath();
+            ctx.fillStyle = "blue";
+            ctx.fill();
+        }
+        
+        function drawPaddle(){
+            ctx.beginPath();
+            ctx.rect(paddleX,paddleY,paddleW,paddleH);
+            ctx.closePath();
+            ctx.fillStyle = "yellow";
+            ctx.fill();
+        }
+        function drawBall(){
+            ctx.beginPath();
+            ctx.arc(ballX,ballY,15,0,2*Math.PI,true);
+            ctx.fillStyle= "red";
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        function handleBallMovement(){
+            ballX +=ballDx;
+            ballY +=ballDy;
+            //ball hits left/right change the direction 
+            if(ballX >boardX - 15 || ballX <15){
+                ballDx =-ballDx;
+            }
+            
+            if(ballY<15 ){
+                ballDy =-ballDy;
+            }
+            else if(ballY>boardY-15-30){
+                if(ballX>paddleX && ballX<paddleX+paddleW){
+                    ballDy = -ballDy;
+                }else{
+                    clearInterval(gameloop);
+                    alert("Game over!");    
+                }
+                
+            }
+        }
+        
+        function keypressListener(evt){
+            switch (evt.keyCode){
+                case 39://right arrow
+                    paddleX = paddleX+40;
+                   if(paddleX>boardX-paddleW){
+                     paddleX=boardX-paddleW;
+                   }
+                    
+                    break;
+                case 37://left arrow
+                    paddleX = paddleX-40;
+                    if(paddleX<0){
+                        paddleX=10;
+                    }
+                    if(paddleX+paddleW> boardX){
+                        paddleX = boardX-paddleW
+                    }
+                      
+                    break;
+            }
+        }
+    </script>
+</html>

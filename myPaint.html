@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+          
+        <style>
+            #myCanvas{
+              border:1px solid red;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="1000" height="500">
+ 
+        </canvas>
+    </body>
+  <script>
+            var canvasContext = document.getElementById("myCanvas").getContext("2d");
+            
+            $("#myCanvas").mousedown(function (e){
+                savePositions(e.pageX - this.offsetLeft , e.pageY - this.offsetTop);
+                paint = true;
+                redraw();
+            }); 
+            $("#myCanvas").mousemove(function (e){
+                if(paint){
+                    savePositions(e.pageX - this.offsetLeft , e.pageY - this.offsetTop,true);
+                    redraw();
+                }
+                
+            });
+            $("#myCanvas").mouseup(function (e){
+               paint= false; 
+            });
+            $("#myCanvas").mouseleave(function (e){
+                 paint= false; 
+            });
+            
+            var posX=[],posY=[],posDrag=[],paint;
+            
+            function savePositions(x,y,drag){
+                posX.push(x);
+                posY.push(y);
+                posDrag.push(drag);
+            }
+            
+            function redraw(){
+              //  canvasContext.clearRect(0,0,canvasContext.canvas.width,canvasContext.canvas.height);
+                canvasContext.strokeStyle = "purple";
+                canvasContext.lineJoin = "round";
+                canvasContext.lineWidth = 5;
+                
+                for(let i=posX.length-1;i<posX.length;i++){
+                    canvasContext.beginPath();
+                    if(posDrag[i] && i){
+                        canvasContext.moveTo(posX[i-1],posY[i-1]);
+                    }
+                    else{
+                         canvasContext.moveTo(posX[i]-1,posY[i]);
+                    }
+                    canvasContext.lineTo(posX[i],posY[i]);
+                    canvasContext.closePath();
+                    canvasContext.stroke();
+                }
+            }
+        </script>
+
+</html>
